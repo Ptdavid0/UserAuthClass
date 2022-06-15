@@ -1,5 +1,4 @@
-import { createContext } from "react";
-import { useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext({
   token: "",
@@ -13,6 +12,7 @@ export const AuthContextProvider = ({ children }) => {
 
   const authenticate = (token) => {
     setAuthToken(token);
+    AsyncStorage.setItem("token", token);
   };
 
   const logout = () => {

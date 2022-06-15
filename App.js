@@ -7,7 +7,8 @@ import SignupScreen from "./screens/SignupScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import { Colors } from "./constants/styles";
 import AuthContextProvider, { AuthContext } from "./store/auth-context";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
 
@@ -63,12 +64,27 @@ function Navigation() {
   );
 }
 
+const Root = () => {
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    async function getToken() {
+      const token = await AsyncStorage.getItem("token");
+      if (token) {
+        authCtx.authenticate(token);
+      }
+    }
+    getToken();
+  }, []);
+  return <Navigation />;
+};
+
 export default function App() {
   return (
     <>
       <StatusBar style="light" />
       <AuthContextProvider>
-        <Navigation />
+        <Root />
       </AuthContextProvider>
     </>
   );
